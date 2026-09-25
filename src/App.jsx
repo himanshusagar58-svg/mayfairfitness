@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import Lightning from './components/Lightning'
-import CircularGallery from './components/CircularGallery'
+import DomeGallery from './components/DomeGallery'
 import Stack from './components/Stack'
 
 const digits = s => (s || '').replace(/\D/g, '')
@@ -20,7 +20,7 @@ export default function App() {
     const srcs = [
       '/img/hero.jpg',
       ...(G.stackImages || []),
-      ...(G.gallery || []).map(g => g.image)
+      ...(G.gallery || []).map(g => typeof g === 'string' ? g : (g.src || g.image || ''))
     ]
     let done = 0
     const load = src => new Promise(res => {
@@ -178,13 +178,18 @@ export default function App() {
         <section className="gal" id="gallery">
           <h2>Inside the gym</h2>
           <div className="gal-wrap">
-            <CircularGallery
-              items={G.gallery || []}
-              bend={3}
-              textColor="#ffffff"
-              borderRadius={0.05}
-              scrollEase={0.04}
-              font="bold 28px Bebas Neue"
+            <DomeGallery
+              images={(G.gallery || []).map(g =>
+                typeof g === 'string'
+                  ? { src: g, alt: '' }
+                  : { src: g.src || g.image || '', alt: g.alt || g.text || '' }
+              )}
+              grayscale={false}
+              overlayBlurColor="#050505"
+              fit={0.55}
+              minRadius={480}
+              imageBorderRadius="16px"
+              openedImageBorderRadius="20px"
             />
           </div>
         </section>
